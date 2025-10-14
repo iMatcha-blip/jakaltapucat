@@ -1,0 +1,4 @@
+geopy
+telegraph
+telethon
+git+https://github.com/navycodes/hydrogram@dev
