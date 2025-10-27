@@ -7,7 +7,7 @@ import asyncio
 from core import app
 from pyrogram import filters, errors, types, enums
 
-from utils.decorators import ONLY_GROUP, ONLY_ADMIN, ONLY_ADMIN_CB
+from utils.decorators import ONLY_GROUP, ONLY_ADMIN
 
 
 __MODULE__ = "Admin-Tools"
@@ -386,3 +386,4 @@ async def pin_callback(client, callback):
     return await callback.answer(
         "Message Pinned Successfully!", show_alert=True
     )
+
