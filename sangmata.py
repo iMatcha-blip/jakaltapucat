@@ -67,20 +67,20 @@ async def sang_mata(client, message):
 @ONLY_GROUP
 async def sangmata_cmd(client, message):
     if len(message.command) < 2:
-        return await message.reply_text("><b>Gunakan format <code>/sangmata on</code>, untuk mengaktifkan sangmata.\nJika Anda ingin menonaktifkan, Anda dapat menggunakan perintah <code>/sangmata off</code>.</b>")
+        return await message.reply_text("><b>Use format\n<code>/sangmata on</code>, to activate SangMata.\n<code>/sangmata off</code> to disable SangMata.</b>")
     state = message.command[1].lower()
     if state not in ["on", "off"]:
-        return await message.reply_text("><b>Gunakan format <code>/sangmata on</code>, untuk mengaktifkan sangmata.\nJika Anda ingin menonaktifkan, Anda dapat menggunakan perintah <code>/sangmata off</code>.</b>")
+        return await message.reply_text("><b>Use format\n<code>/sangmata on</code>, to activate SangMata.\n<code>/sangmata off</code> to disable SangMata.</b>")
     if state == "on":
         if not await dB.get_var(message.chat.id, "SICEPU"):
-            return await message.reply_text(">**Sangmata sudah diaktifkan**")
+            return await message.reply_text("**Sangmata has been activated.**")
         await dB.remove_var(message.chat.id, "SICEPU")
-        return await message.reply_text(">**Sangmata berhasil diaktifkan.**")
+        return await message.reply_text("**Successfully activate Sangmata.**")
     else:
         if await dB.get_var(message.chat.id, "SICEPU"):
-            return await message.reply_text(">**Sangmata sudah dinonaktifkan**")
+            return await message.reply_text("**Sangmata has been turned off**")
         await dB.set_var(message.chat.id, "SICEPU", True)
-        return await message.reply_text(">**Sangmata berhasil dinonaktifkan.**")
+        return await message.reply_text("**Successfully turned off Sangmata.**")
 
 
 @app.on_message(filters.command(["sg"]) & ~config.BANNED_USERS)
@@ -121,4 +121,5 @@ __HELP__ = """
 <b>★ /sg</b> [userID/reply] – View user name history.
 </blockquote>
 """
+
 
