@@ -40,23 +40,23 @@ async def sang_mata(client, message):
         return
 
     if old_username != username:
-        old_u = f"@{old_username}" if old_username else "<b>Tanpa Username</b>"
-        new_u = f"@{username}" if username else "<b>Tanpa Username</b>"
-        changes.append(f"<b>🔄 Mengubah username dari <code>{old_u}</code> ke <code>{new_u}</code></b>.")
+        old_u = f"@{old_username}" if old_username else "<b>Without Username</b>"
+        new_u = f"@{username}" if username else "<b>Without Username</b>"
+        changes.append(f"<b>♻️ Changing the username from <code>{old_u}</code> ke <code>{new_u}</code></b>.")
 
     if old_first != first:
-        changes.append(f"<b>🔄 Mengubah nama depan dari <code>{old_first}</code> menjadi <code>{first}</code>.</b>")
+        changes.append(f"<b>♻️ Changing the first name from <code>{old_first}</code> to <code>{first}</code>.</b>")
 
     if old_last != last:
         old_l = old_last or "<b>Tanpa Nama Belakang</b>"
         new_l = last or "<b>Tanpa Nama Belakang</b>"
-        changes.append(f"<b>🔄 Mengubah nama belakang dari <code>{old_l}</code> menjadi <code>{new_l}</code>.</b>")
+        changes.append(f"<b>♻️ Changing the last name from <code>{old_l}</code> to <code>{new_l}</code>.</b>")
 
     if changes:
-        msg = f"<b>👀 {client.mention} SangMata</b>\n\n"
+        msg = f"<b>👀 {client.mention} Sang Mata Detected!</b>\n\n"
         msg += f"<b>Pengguna : {message.from_user.mention} [<code>{user_id}</code>]</b>\n"
         msg += "\n".join(changes)
-        await message.reply_text(msg, quote=True)
+        await message.reply_text(f"<blockquote expandable>{msg}</blockquote>", quote=True)
 
         await dB.add_userdata(user_id, first, last, username)
 
@@ -121,3 +121,4 @@ __HELP__ = """
 <b>★ /sg</b> [userID/reply] – View user name history.
 </blockquote>
 """
+
