@@ -12,23 +12,21 @@ from utils.decorators import ONLY_GROUP, ONLY_ADMIN
 
 __MODULE__ = "Admin-Tools"
 __HELP__ = """
-<blockquote expandable>
-<b>🔧 Admin Tools</b>
+<blockquote expandable><b>🔧 Admin Tools</b>
 
-<b>★ /promote</b> [reply/user_id] (custom title optional) - Promote a user to admin with basic rights.
-<b>★ /fullpromote</b> [reply/user_id] (custom title optional) - Promote with full rights.
-<b>★ /demote</b> [reply/user_id] - Revoke admin rights from a user.
+<b>/promote</b> [reply/user_id] (custom title optional) - Promote a user to admin with basic rights.
+<b>/fullpromote</b> [reply/user_id] (custom title optional) - Promote with full rights.
+<b>/demote</b> [reply/user_id] - Revoke admin rights from a user.
 
-<b>★ /staff</b> - Show structured list of admins, including bots and custom titles.
+<b>/staff</b> - Show structured list of admins, including bots and custom titles.
 
-<b>★ /purge</b> [reply message] - Delete all messages from the replied message to the current one.
-<b>★ /del</b> [reply message] - Delete the replied message only.
+<b>/purge</b> [reply message] - Delete all messages from the replied message to the current one.
+<b>/del</b> [reply message] - Delete the replied message only.
 
-<b>★ /pin</b> [reply message] - Pin a message.
-<b>★ /unpin</b> [reply message] - Unpin a message.
+<b>/pin</b> [reply message] - Pin a message.
+<b>/unpin</b> [reply message] - Unpin a message.
 
-<i>All commands must be used by group admins or sudo users.</i>
-</blockquote>
+<i>All commands must be used by group admins or sudo users.</i></blockquote>
 """
 
 
@@ -331,7 +329,7 @@ async def unpin_cmd(_, message):
 
 
 @app.on_callback_query(filters.regex("^(pincb_|unpincb_)"))
-@ONLY_ADMIN_CB
+@ONLY_ADMIN
 async def pin_callback(client, callback):
     data = callback.data
     if data == "pincb_cancel":
@@ -386,4 +384,5 @@ async def pin_callback(client, callback):
     return await callback.answer(
         "Message Pinned Successfully!", show_alert=True
     )
+
 
