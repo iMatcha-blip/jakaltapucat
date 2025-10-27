@@ -34,7 +34,7 @@ async def removeword(chat_id, text):
 async def ankestools(client, message):
     chat_id = message.chat.id
     if len(message.command) < 2:
-        return await message.reply(">**Gunakan format `/protect [on/off]`**")
+        return await message.reply("**Gunakan format `/protect [on/off]`**")
     jk = message.command[1]
     status = await dB.get_var(chat_id, "PROTECT")
     if jk.lower() in ["On", "on"]:
@@ -42,15 +42,15 @@ async def ankestools(client, message):
             return await message.reply(">**Protect sudah diaktifkan**")
         await dB.set_var(chat_id, "PROTECT", jk)
         await Deleter.setup_antigcast(client, message)
-        return await message.reply(f">**Berhasil mengatur protect menjadi {jk}.**\n\n**If admin messages are deleted by bots after enabling /antigcast on .\nJust type /reload to refresh admin list**")
+        return await message.reply(f"**Berhasil mengatur protect menjadi {jk}.**\n\n**If admin messages are deleted by bots after enabling /antigcast on .\nJust type /reload to refresh admin list**")
     elif jk in ["Off", "off"]:
         if status is None:
-            return await message.reply(">**Protect belum diaktifkan**")
+            return await message.reply("**Protect belum diaktifkan**")
         await dB.remove_var(chat_id, "PROTECT")
         Deleter.SETUP_CHATS.remove(chat_id)
-        return await message.reply(f">**Berhasil mengatur protect menjadi {jk}.**")
+        return await message.reply(f"**Berhasil mengatur protect menjadi {jk}.**")
     else:
-        return await message.reply(f">**{jk} Format salah, Gunakan `/protect [on/off]`.**")
+        return await message.reply(f"**{jk} Format salah, Gunakan `/protect [on/off]`.**")
     
 
 @app.on_message(filters.command(["clearwhite","clearfree", "clearapproved"]) & ~BANNED_USERS)
@@ -65,7 +65,7 @@ async def clear_approved(_, message):
         except Exception:
             pass
         await dB.remove_from_var(chat_id, "APPROVED_USERS", user)
-    return await message.reply(">**Berhasil menghapus semua pengguna approved.**")
+    return await message.reply("**Berhasil menghapus semua pengguna approved.**")
 
 @app.on_message(filters.command(["clearblack"]) & ~BANNED_USERS)
 @ONLY_GROUP
@@ -79,7 +79,7 @@ async def clear_blackuser(_, message):
         except Exception:
             pass
         await dB.remove_from_var(chat_id, "SILENT_USER", pre)
-    return await message.reply(">**Berhasil menghapus list black pengguna.**")
+    return await message.reply("**Berhasil menghapus list black pengguna.**")
 
 @app.on_message(filters.command(["free", "approve", "addwhite"]) & ~BANNED_USERS)
 @ONLY_GROUP
@@ -88,28 +88,28 @@ async def add_approve(client, message):
     reply = message.reply_to_message
     chat_id = message.chat.id
     if reply and reply.sender_chat:
-        return await message.reply(">**Gunakan perintah ini dengan membalas pesan pengguna!! Bukan akun anonymous.**")
+        return await message.reply("**Gunakan perintah ini dengan membalas pesan pengguna!! Bukan akun anonymous.**")
     try:
         target = reply.from_user.id if reply else message.text.split()[1]
     except (AttributeError, IndexError):
-        return await message.reply(">**Balas pesan pengguna atau berikan username pengguna.**")
+        return await message.reply("**Balas pesan pengguna atau berikan username pengguna.**")
     try:
         user = await client.get_users(target)
     except (errors.PeerIdInvalid, KeyError, errors.UsernameInvalid, errors.UsernameNotOccupied):
-        return await message.reply(">**Silahkan berikan id pengguna yang valid!!**")
+        return await message.reply("**Silahkan berikan id pengguna yang valid!!**")
     ids = user.id
     if ids in SUDOERS:
-        return await message.reply(">**Pengguna adalah SUDOERS bot!!**")
+        return await message.reply("**Pengguna adalah SUDOERS bot!!**")
     freedom = await dB.get_list_from_var(chat_id, "APPROVED_USERS")
     if ids in freedom:
-        return await message.reply_text(">**Pengguna sudah disetujui.**")
+        return await message.reply_text("**Pengguna sudah disetujui.**")
     await dB.add_to_var(chat_id, "APPROVED_USERS", ids)
     try:
         Deleter.WHITELIST_USER[chat_id].append(ids)
     except Exception:
         Deleter.WHITELIST_USER[chat_id] = []
         Deleter.WHITELIST_USER[chat_id].append(ids)
-    return await message.reply(f">**Pengguna: {user.mention} telah disetujui tidak akan terkena antigcast.")
+    return await message.reply(f"**Pengguna: {user.mention} telah disetujui tidak akan terkena antigcast.")
 
 
 @app.on_message(filters.command(["unfree", "unapprove", "delwhite"]) & ~BANNED_USERS)
@@ -119,27 +119,27 @@ async def un_approve(client, message):
     reply = message.reply_to_message
     chat_id = message.chat.id
     if reply and reply.sender_chat:
-        return await message.reply(">**Gunakan perintah ini dengan membalas pesan pengguna!! Bukan akun anonymous.**")
+        return await message.reply("**Gunakan perintah ini dengan membalas pesan pengguna!! Bukan akun anonymous.**")
     try:
         target = reply.from_user.id if reply else message.text.split()[1]
     except (AttributeError, IndexError):
         return await message.reply(
-            ">**Balas pesan pengguna atau berikan username pengguna.**"
+            "**Balas pesan pengguna atau berikan username pengguna.**"
         )
     try:
         user = await client.get_users(target)
     except (errors.PeerIdInvalid, KeyError, errors.UsernameInvalid, errors.UsernameNotOccupied):
-        return await message.reply(">**Silahkan berikan id pengguna yang valid!!**")
+        return await message.reply("**Silahkan berikan id pengguna yang valid!!**")
     ids = user.id
     freedom = await dB.get_list_from_var(chat_id, "APPROVED_USERS")
     if ids not in freedom:
-        return await message.reply_text(">**Pengguna memang belum disetujui.**")
+        return await message.reply_text("**Pengguna memang belum disetujui.**")
     await dB.remove_from_var(chat_id, "APPROVED_USERS", ids)
     try:
         Deleter.WHITELIST_USER[chat_id].remove(ids)
     except Exception:
         pass
-    return await message.reply(f">**Pengguna: {user.mention} telah dihapus dari daftar approved.**")
+    return await message.reply(f"**Pengguna: {user.mention} telah dihapus dari daftar approved.**")
 
 @app.on_message(filters.command(["listwhite", "approved"]) & ~BANNED_USERS)
 @ONLY_GROUP
@@ -148,7 +148,7 @@ async def listapproved(_, message):
     chat_id = message.chat.id
     approved = await dB.get_list_from_var(chat_id, "APPROVED_USERS")
     if len(approved) == 0:
-        return await message.reply(">**Belum ada pengguna yang disetujui.**")
+        return await message.reply("**Belum ada pengguna yang disetujui.**")
     msg = f"<blockquote expandable>**Pengguna Approved Di {message.chat.title}:**\n\n"
     for count, user in enumerate(approved, 1):
         msg += f"**•**{count} -> {user}\n"
@@ -166,7 +166,7 @@ async def listblack(_, message):
     chat_id = message.chat.id
     blacklist = await dB.get_list_from_var(chat_id, "SILENT_USER")
     if len(blacklist) == 0:
-        return await message.reply(">**Belum ada pengguna yang diblacklist.**")
+        return await message.reply("**Belum ada pengguna yang diblacklist.**")
     msg = f"<blockquote expandable>**Pengguna Blackist Di {message.chat.title}:**\n\n"
     for count, user in enumerate(blacklist, 1):
         msg += f"**•**{count} -> {user}\n"
@@ -185,28 +185,28 @@ async def _(client, message):
     reply = message.reply_to_message
     chat_id = message.chat.id
     if reply and reply.sender_chat:
-        return await message.reply(">**Gunakan perintah ini dengan membalas pesan pengguna!! Bukan akun anonymous.**")
+        return await message.reply("**Gunakan perintah ini dengan membalas pesan pengguna!! Bukan akun anonymous.**")
     try:
         target = reply.from_user.id if reply else message.text.split()[1]
     except (AttributeError, IndexError):
-        return await message.reply(">**Balas pesan pengguna atau berikan username pengguna.**")
+        return await message.reply("**Balas pesan pengguna atau berikan username pengguna.**")
     try:
         user = await client.get_users(target)
     except (errors.PeerIdInvalid, KeyError, errors.UsernameInvalid, errors.UsernameNotOccupied):
-        return await message.reply(">**Silahkan berikan id pengguna yang valid!!**")
+        return await message.reply("**Silahkan berikan id pengguna yang valid!!**")
     ids = user.id
     if ids in SUDOERS:
-        return await message.reply(">**Pengguna adalah SUDOERS bot!!**")
+        return await message.reply("**Pengguna adalah SUDOERS bot!!**")
     dicekah = await dB.get_list_from_var(chat_id, "SILENT_USER")
     if ids in dicekah:
-        return await message.reply_text(">**Pengguna sudah diblacklist.**")
+        return await message.reply_text("**Pengguna sudah diblacklist.**")
     await dB.add_to_var(chat_id, "SILENT_USER", ids)
     try:
         Deleter.BLACKLIST_USER[chat_id].append(ids)
     except Exception:
         Deleter.BLACKLIST_USER[chat_id] = []
         Deleter.BLACKLIST_USER[chat_id].append(ids)
-    msg = await message.reply(f">**Pengguna: {ids} ditambahkan ke blacklist.**")
+    msg = await message.reply(f"**Pengguna: {ids} ditambahkan ke blacklist.**")
     await asyncio.sleep(1)
     return await msg.delete()
 
@@ -218,15 +218,15 @@ async def _(client, message):
     reply = message.reply_to_message
     chat_id = message.chat.id
     if reply and reply.sender_chat:
-        return await message.reply(">**Gunakan perintah ini dengan membalas pesan pengguna!! Bukan akun anonymous.**")
+        return await message.reply("**Gunakan perintah ini dengan membalas pesan pengguna!! Bukan akun anonymous.**")
     try:
         target = reply.from_user.id if reply else message.text.split()[1]
     except (AttributeError, IndexError):
-        return await message.reply(">**Balas pesan pengguna atau berikan username pengguna.**")
+        return await message.reply("**Balas pesan pengguna atau berikan username pengguna.**")
     try:
         user = await client.get_users(target)
     except (errors.PeerIdInvalid, KeyError, errors.UsernameInvalid, errors.UsernameNotOccupied):
-        return await message.reply(">**Silahkan berikan id pengguna yang valid!!**")
+        return await message.reply("**Silahkan berikan id pengguna yang valid!!**")
     ids = user.id
     dicekah = await dB.get_list_from_var(chat_id, "SILENT_USER")
     if ids not in dicekah:
@@ -236,7 +236,7 @@ async def _(client, message):
         Deleter.BLACKLIST_USER[chat_id].remove(ids)
     except Exception:
         pass
-    msg = await message.reply(f">**Pengguna: {ids} dihapus ke blacklist.**")
+    msg = await message.reply(f"**Pengguna: {ids} dihapus ke blacklist.**")
     await asyncio.sleep(1)
     return await msg.delete()
 
@@ -252,11 +252,11 @@ async def addword_blacklist(_, message):
     elif len(message.command) > 1:
         text = message.text.split(None, 1)[1]
     else:
-        return await message.reply(">**Balas ke pesan atau berikan pesan untuk diblacklist.**")
+        return await message.reply("**Balas ke pesan atau berikan pesan untuk diblacklist.**")
     if text is None:
-        return await message.reply(">**Pesan tidak memiliki teks untuk diblacklist.**")
+        return await message.reply("**Pesan tidak memiliki teks untuk diblacklist.**")
     black = await blacklistword(chat_id, text)
-    msg = await message.reply(f">**Kata dimasukkan ke blacklist:**\n{black}")
+    msg = await message.reply(f"**Kata dimasukkan ke blacklist:**\n{black}")
     await asyncio.sleep(1)
     return await msg.delete()
 
@@ -273,14 +273,14 @@ async def delword_blacklist(_, message):
     elif len(message.command) > 1:
         text = message.text.split(None, 1)[1]
     else:
-        return await message.reply(">**Balas ke pesan atau berikan pesan untuk dihapus dari blacklist.**")
+        return await message.reply("**Balas ke pesan atau berikan pesan untuk dihapus dari blacklist.**")
     if text is None:
-        return await message.reply(">**Pesan tidak memiliki teks untuk dihapus dari blacklist.**")
+        return await message.reply("**Pesan tidak memiliki teks untuk dihapus dari blacklist.**")
     black = await removeword(chat_id, text)
     if black is not None:
-        return await message.reply(f">**Kata dihapus dari blacklist:**\n{black}")
+        return await message.reply(f"**Kata dihapus dari blacklist:**\n{black}")
     else:
-        return await message.reply(">**Kata tidak ditemukan di blacklist.**")
+        return await message.reply("**Kata tidak ditemukan di blacklist.**")
 
 
 @app.on_message(filters.command(["listbl"]) & ~BANNED_USERS)
@@ -290,7 +290,7 @@ async def listwordblacklist(_, message):
     chat_id = message.chat.id
     list_text = await dB.get_var(chat_id, "delete_word")
     if list_text is None:
-        return await message.reply(">**Belum ada pesan yg diblacklist.**")
+        return await message.reply("**Belum ada pesan yg diblacklist.**")
     msg = f"<blockquote expandable>**Daftar Blacklist Di {message.chat.title}:**\n"
     for num, text in enumerate(list_text, 1):
         msg += f"{num}. {text}\n"
@@ -301,10 +301,6 @@ async def listwordblacklist(_, message):
         link = await pastebin.paste(msg)
         return await message.reply(link, disable_web_page_preview=True)
 
-
-"""
-Mau ngapain hayo liat kesini wkwkwkkwkwkwkwk
-"""
 
 @app.on_message(filters.incoming & filters.group & ~filters.bot & ~filters.via_bot, group=ankes_group)
 async def handle_deleter(client, message):
@@ -345,3 +341,4 @@ __HELP__ = """
 
 </blockquote>
 """
+
