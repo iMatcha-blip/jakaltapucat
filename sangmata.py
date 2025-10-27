@@ -48,8 +48,8 @@ async def sang_mata(client, message):
         changes.append(f"<b>♻️ Changing the first name from <code>{old_first}</code> to <code>{first}</code>.</b>")
 
     if old_last != last:
-        old_l = old_last or "<b>Tanpa Nama Belakang</b>"
-        new_l = last or "<b>Tanpa Nama Belakang</b>"
+        old_l = old_last or "<b>Without a last name</b>"
+        new_l = last or "<b>Without a last name</b>"
         changes.append(f"<b>♻️ Changing the last name from <code>{old_l}</code> to <code>{new_l}</code>.</b>")
 
     if changes:
@@ -67,10 +67,10 @@ async def sang_mata(client, message):
 @ONLY_GROUP
 async def sangmata_cmd(client, message):
     if len(message.command) < 2:
-        return await message.reply_text("><b>Use format\n<code>/sangmata on</code>, to activate SangMata.\n<code>/sangmata off</code> to disable SangMata.</b>")
+        return await message.reply_text("<b>Use format\n<code>/sangmata on</code> to activate SangMata.\n<code>/sangmata off</code> to disable SangMata.</b>")
     state = message.command[1].lower()
     if state not in ["on", "off"]:
-        return await message.reply_text("><b>Use format\n<code>/sangmata on</code>, to activate SangMata.\n<code>/sangmata off</code> to disable SangMata.</b>")
+        return await message.reply_text("<b>Use format\n<code>/sangmata on</code> to activate SangMata.\n<code>/sangmata off</code> to disable SangMata.</b>")
     if state == "on":
         if not await dB.get_var(message.chat.id, "SICEPU"):
             return await message.reply_text("**Sangmata has been activated.**")
@@ -89,12 +89,12 @@ async def history(client, message):
     try:
         target = reply.from_user.id if reply else message.text.split()[1]
     except (AttributeError, IndexError):
-        return await message.reply(">**Balas pesan pengguna atau berikan username pengguna.**")
+        return await message.reply("**Balas pesan pengguna atau berikan username pengguna.**")
     try:
         user_id = (await client.get_users(target)).id
     except Exception:
         user_id = int(message.command[1])
-    proses = await message.reply(">**Please wait...**")
+    proses = await message.reply("**Please wait...**")
     bot = ["@Sangmata_bot", "@SangMata_beta_bot"]
     babu = userbot.clients[0]
     getbot = random.choice(bot)
@@ -121,5 +121,6 @@ __HELP__ = """
 <b>★ /sg</b> [userID/reply] – View user name history.
 </blockquote>
 """
+
 
 
