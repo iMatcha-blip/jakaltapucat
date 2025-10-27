@@ -42,7 +42,7 @@ async def callback_unmute(client, callback):
                 await callback.answer("Peringatan! Jangan tekan tombol saat Anda bisa berbicara.", True)
 
 
-@app.on_message(filters.incoming & ~filters.private, group=-2)
+@app.on_message(filters.incoming & ~filters.privaqte, group=-2)
 async def check_member(client, message):
     chat_id = message.chat.id
     force_subs = await dB.get_var(chat_id, "IS_FORCESUB")
@@ -72,18 +72,18 @@ f"""👋 Selamat Datang {message.from_user.mention}
 
 Anda belum bergabung dengan channel kami **{fsub_title}**.
 
-Silahkan bergabung [disini]({invite_url}) dan tekan tombol **🙏🏻 Suarakan Saya**.""",
+Silahkan bergabung [disini]({invite_url}) dan tekan tombol **Suarakan Saya**.""",
                         disable_web_page_preview=True,
                         reply_markup=ikb([
-                            [("❤️ Join Channel", invite_url, "url")],
-                            [("🙏🏻 Suarakan Saya", "RequestUnMute")]
+                            [("Join Channel", invite_url, "url")],
+                            [("Suarakan Saya", "RequestUnMute")]
                         ])
                     )
                     return await client.restrict_chat_member(chat_id, user_id, types.ChatPermissions())
                 except errors.ChatAdminRequired: 
-                    return await sent_message.edit(">**Saya bukan admin disini..\nBeri saya izin larangan dan coba lagi.**")
+                    return await sent_message.edit("**Saya bukan admin disini..\nBeri saya izin larangan dan coba lagi.**")
             except errors.ChatAdminRequired:
-                return await client.send_message(chat_id, f">**Saya bukan admin `{force_subs}` channel.\nJadikan saya admin disaluran itu.**")
+                return await client.send_message(chat_id, f"**Saya bukan admin `{force_subs}` channel.\nJadikan saya admin disaluran itu.**")
 
 
 @app.on_message(filters.command(["forcesubscribe", "fsub"]) & ~filters.private & ~config.BANNED_USERS)
@@ -92,16 +92,16 @@ Silahkan bergabung [disini]({invite_url}) dan tekan tombol **🙏🏻 Suarakan S
 async def forsub_cmd(client, message):
     chat_id = message.chat.id
     if len(message.command) < 2:
-        return await message.reply(">**Gunakan format /fsub @username untuk mengaktifkan wajib join ke saluran yang dituju, atau /fsub off untuk mematikan wajib join paksa.**")
+        return await message.reply("**Gunakan format /fsub @username untuk mengaktifkan wajib join ke saluran yang dituju, atau /fsub off untuk mematikan wajib join paksa.**")
     input_str = message.command[1]
     is_on = await dB.get_var(chat_id, "IS_FORCESUB")
     if input_str.lower() == "off":
          if not is_on:
-             return await message.reply(">**Wajib paksa join memang belum diatur.**")
+             return await message.reply("**Wajib paksa join memang belum diatur.**")
          await dB.remove_var(chat_id, "IS_FORCESUB")
-         return await message.reply(f">**Wajib join paksa ke `{is_on}` berhasil dihapus dan dimatikan.**")
+         return await message.reply(f"**Wajib join paksa ke `{is_on}` berhasil dihapus dan dimatikan.**")
     elif input_str.lower() == "clear":
-        sent_message = await message.reply_text(">**Tunggu sebentar sedang membunyikan pengguna yang bisu...**")
+        sent_message = await message.reply_text("**Tunggu sebentar sedang membunyikan pengguna yang bisu...**")
         count = 0
         try:
             async for chat_member in client.get_chat_members(
@@ -116,9 +116,9 @@ async def forsub_cmd(client, message):
                         await asyncio.sleep(e.value)
                         await client.unban_chat_member(chat_id, chat_member.user.id)
                         count += 1
-            return await sent_message.edit(f">**Berhasil membunyikan pengguna yang bisu, total `{count}` pengguna bisu.**")
+            return await sent_message.edit(f"**Berhasil membunyikan pengguna yang bisu, total `{count}` pengguna bisu.**")
         except errors.ChatAdminRequired:
-            return await sent_message.edit(">Saya bukan admin di chat ini.\nSaya tidak dapat mengaktifkan suara anggota karena saya bukan admin dalam obrolan ini, jadikan saya admin dan berikan izin ban pengguna.")
+            return await sent_message.edit("Saya bukan admin di chat ini.\nSaya tidak dapat mengaktifkan suara anggota karena saya bukan admin dalam obrolan ini, jadikan saya admin dan berikan izin ban pengguna.")
     else:
         try:
             if input_str.startswith("-100"):
@@ -132,7 +132,7 @@ async def forsub_cmd(client, message):
             await dB.set_var(chat_id, "IS_FORCESUB", str(chat_info.id))
             title = chat_info.title or "Chat"
             return await message.reply_text(
-                f">**Paksa Berlangganan Diaktifkan.**\n\n"
+                f"**Paksa Berlangganan Diaktifkan.**\n\n"
                 f"Semua anggota harus join ke **{title}** agar bisa mengirim pesan di grup ini.",
                 disable_web_page_preview=True
             )
@@ -146,18 +146,19 @@ async def forsub_cmd(client, message):
             return await message.reply_text(f"**ERROR:** {str(err)}")
         
 
-__MODULE__ = "Force-Subs"
+__MODULE__ = "Force"
 __HELP__ = """
 <blockquote expandable>
 <b>🔗 Force Subscription</b>
 
-<b>★ /fsub</b> @channel_username or <code>-100xxxxxxxxxx</code>  
+<b>/fsub</b> @channel_username or <code>-100xxxxxxxxxx</code>  
 Enable forced subscription to a specific channel.
 
-<b>★ /fsub off</b>  
+<b>/fsub off</b>  
 Disable forced subscription.
 
-<b>★ /fsub clear</b>  
+<b>/fsub clear</b>  
 Unmute all users previously muted for not joining the required channel.
 </blockquote>
 """
+
