@@ -16,17 +16,13 @@ from utils.query_group import afk_group
 __MODULE__ = "AFK"
 
 __HELP__ = """
-<blockquote expandable>
-
-💤 <b>AFK Mode</b>
+<blockquote expandable>💤 <b>AFK Mode</b>
 
 • <b>/afk [reason]</b> – Activate AFK status with optional reason.  
 • You can also send a sticker, photo, or video to show your AFK.  
 • To disable AFK, just send any message.
 
-<i>Supports markdown & custom reply messages.</i>
-
-</blockquote>
+<i>Supports markdown & custom reply messages.</i></blockquote>
 """
 
 
@@ -135,7 +131,7 @@ async def active_afk(_, message):
         return
 
     # Setup new AFK
-    reason = "Berak dulu"
+    reason = "Lagi ngentuot"
     data = None
     afk_type = "text"
 
@@ -183,7 +179,7 @@ async def active_afk(_, message):
 
 
     
-@app.on_message(filters.command("afkdel") & filters.group)
+@app.on_message(filters.command("unafk") & filters.group)
 @ONLY_ADMIN
 async def afkdel_state(_, message):
     if not message.from_user:
@@ -352,3 +348,4 @@ async def on_reaction(client, update, users, chats):
 
     except Exception:
         print(traceback.format_exc())
+
