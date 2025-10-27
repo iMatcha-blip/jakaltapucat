@@ -5,6 +5,10 @@ from core import app
 from utils.decorators import ONLY_ADMIN, ONLY_GROUP
 from pyrogram import filters, errors, enums
 
+# ==============================
+#   Tag All & Tag Admins System
+# ==============================
+
 active_tasks = {}
 admins_tasks = {}
 
@@ -19,9 +23,17 @@ __HELP__ = """
 <i>Mentions automatically stop after 5 minutes.</i></blockquote>
 """
 
+# ============ UTILITIES ============
+
 def random_emoji():
-    emojis = "🍦 🎈 🎸 🌼 🌳 🚀 🎩 📷 💡 🏄‍♂️ 🎹 🚲 🍕 🌟 🎨 📚 🚁 🎮 🍔 🍉 🎉 🎵 🌸 🌈 🏝️ 🌞 🎢 🚗 🎭 🍩 🎲 📱 🏖️ 🛸 🧩 🚢 🎠 🏰 🎯 🥳 🎰 🛒 🧸 🛺 🧊 🛷 🦩 🎡 🎣 🏹 🧁 🥨 🎻 🎺 🥁 🛹".split(" ")
+    emojis = (
+        "🍦 🎈 🎸 🌼 🌳 🚀 🎩 📷 💡 🏄‍♂️ 🎹 🚲 🍕 🌟 🎨 📚 🚁 🎮 🍔 🍉 🎉 🎵 🌸 🌈 "
+        "🏝️ 🌞 🎢 🚗 🎭 🍩 🎲 📱 🏖️ 🛸 🧩 🚢 🎠 🏰 🎯 🥳 🎰 🛒 🧸 🛺 🧊 🛷 🦩 🎡 🎣 🏹 🧁 🥨 🎻 🎺 🥁 🛹"
+    ).split()
     return random.choice(emojis)
+
+
+# ============ MAIN TAGALL ============
 
 @app.on_message(filters.command(["utag", "all", "tagall"]) & ~config.BANNED_USERS)
 @ONLY_GROUP
@@ -34,6 +46,7 @@ async def tagall_cmd(client, message):
     if active_tasks.get(chat_id):
         return await proses.edit(">❌ Mention already running in this chat. Use `/cancel` to stop it.")
 
+    # --- ambil text target ---
     text = None
     if len(message.command) >= 2:
         text = message.text.split(maxsplit=1)[1]
@@ -62,28 +75,24 @@ async def tagall_cmd(client, message):
                 usernum += 1
                 usertxt += f"<blockquote>[{random_emoji()}](tg://user?id={m.user.id})</blockquote>"
 
+                # kirim tiap 7 user
                 if usernum == 7:
+                    msg_text = f"{head}\n<b>{text}</b>\n\n<blockquote><b>{usertxt}</b></blockquote>"
                     if replied:
-                        await replied.reply_text(usertxt, disable_web_page_preview=True)
+                        await replied.reply_text(msg_text, disable_web_page_preview=True)
                     else:
-                        await client.send_message(
-                            chat_id,
-                            f"{head}\n<b>{text}</b>\n\n<blockquote><b>{usertxt}</blockquote></b>",
-                            disable_web_page_preview=True
-                        )
+                        await client.send_message(chat_id, msg_text, disable_web_page_preview=True)
                     await asyncio.sleep(5)
                     usernum = 0
                     usertxt = ""
 
-            if usernum != 0:
+            # kirim sisa mention
+            if usernum:
+                msg_text = f"{head}\n<b>{text}</b>\n\n<blockquote><b>{usertxt}</b></blockquote>"
                 if replied:
-                    await replied.reply_text(usertxt, disable_web_page_preview=True)
+                    await replied.reply_text(msg_text, disable_web_page_preview=True)
                 else:
-                    await client.send_message(
-                        chat_id,
-                        f"{head}\n<b>{text}</b>\n\n<blockquote><b>{usertxt}</blockquote></b>",
-                        disable_web_page_preview=True
-                    )
+                    await client.send_message(chat_id, msg_text, disable_web_page_preview=True)
 
         except errors.FloodWait as e:
             await asyncio.sleep(e.value)
@@ -95,10 +104,11 @@ async def tagall_cmd(client, message):
     except asyncio.TimeoutError:
         active_tasks.pop(chat_id, None)
         await proses.edit(">⏰ Task timeout after 5 minutes!")
-        return
+    else:
+        await proses.delete()
 
-    await proses.delete()
 
+# ============ CANCEL TAG ============
 
 @app.on_message(filters.command("cancel") & ~config.BANNED_USERS)
 @ONLY_GROUP
@@ -109,9 +119,10 @@ async def cancel_tagall(_, message):
         return await message.reply(">**✅ Mention cancelled!**")
     elif admins_tasks.pop(chat_id, None):
         return await message.reply(">**✅ Mention admin cancelled!**")
-    else:
-        return await message.reply(">**⚠️ No active mention running.**")
+    return await message.reply(">**⚠️ No active mention running.**")
 
+
+# ============ TAG ADMINS ============
 
 @app.on_message(filters.command(["tagadmins", "admins"]) & ~config.BANNED_USERS)
 @ONLY_GROUP
@@ -141,9 +152,7 @@ async def tagadmins_cmd(client, message):
     head = "<blockquote>🛒 @xCpCode</blockquote>"
 
     try:
-        async for m in client.get_chat_members(
-            chat_id, filter=enums.ChatMembersFilter.ADMINISTRATORS
-        ):
+        async for m in client.get_chat_members(chat_id, filter=enums.ChatMembersFilter.ADMINISTRATORS):
             if not admins_tasks.get(chat_id):
                 return await proses.edit(">❌ Mention was cancelled!")
 
@@ -154,27 +163,21 @@ async def tagadmins_cmd(client, message):
             usertxt += f"<blockquote>[{random_emoji()}](tg://user?id={m.user.id})</blockquote>"
 
             if usernum == 7:
+                msg_text = f"{head}\n<b>{text}</b>\n\n<blockquote><b>{usertxt}</b></blockquote>"
                 if replied:
-                    await replied.reply_text(usertxt, disable_web_page_preview=True)
+                    await replied.reply_text(msg_text, disable_web_page_preview=True)
                 else:
-                    await client.send_message(
-                        chat_id,
-                        f"{head}\n<b>{text}</b>\n\n<blockquote><b>{usertxt}</blockquote></b>",
-                        disable_web_page_preview=True
-                    )
-                await asyncio.sleep(2)
+                    await client.send_message(chat_id, msg_text, disable_web_page_preview=True)
+                await asyncio.sleep(3)
                 usernum = 0
                 usertxt = ""
 
-        if usernum != 0:
+        if usernum:
+            msg_text = f"{head}\n<b>{text}</b>\n\n<blockquote><b>{usertxt}</b></blockquote>"
             if replied:
-                await replied.reply_text(usertxt, disable_web_page_preview=True)
+                await replied.reply_text(msg_text, disable_web_page_preview=True)
             else:
-                await client.send_message(
-                    chat_id,
-                    f"{head}\n<b>{text}</b>\n\n<blockquote><b>{usertxt}</blockquote></b>",
-                    disable_web_page_preview=True
-                )
+                await client.send_message(chat_id, msg_text, disable_web_page_preview=True)
 
     except errors.FloodWait as e:
         await asyncio.sleep(e.value)
