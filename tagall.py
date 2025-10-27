@@ -10,15 +10,13 @@ admins_tasks = {}
 
 __MODULE__ = "Mention"
 __HELP__ = """
-<blockquote expandable>
-<b>📣 Mention Users</b>
+<blockquote expandable><b>📣 Mention Users</b>
 
-<b>★ /tagall</b> | <b>/all</b> | <b>/utag</b> [text/reply] – Mention all members.  
-<b>★ /tagadmins</b> | <b>/admins</b> [text/reply] – Mention all admins.  
-<b>★ /cancel</b> – Stop the mention process.
+<b>/tagall</b> | <b>/all</b> | <b>/utag</b> [text/reply] – Mention all members.  
+<b>/tagadmins</b> | <b>/admins</b> [text/reply] – Mention all admins.  
+<b>/cancel</b> – Stop the mention process.
 
-<i>Mentions automatically stop after 5 minutes.</i>
-</blockquote>
+<i>Mentions automatically stop after 5 minutes.</i></blockquote>
 """
 
 
@@ -62,23 +60,25 @@ async def tagall_cmd(client, message):
 
                 usernum += 1
                 usertxt += f"<blockquote>[{random_emoji()}](tg://user?id={m.user.id})</blockquote>"
+                head += f"<blockquote>🛒 @xCpCode</blockquote>"
 
                 if usernum == 7:
                     if replied:
                         await replied.reply_text(usertxt, disable_web_page_preview=True)
                     else:
                         text = message.text.split(maxsplit=1)[1]
-                        await client.send_message(chat_id, f"<blockquote><b>{text}</b></blockquote>\n<blockquote><b>{usertxt}</blockquote></b>", disable_web_page_preview=True)
+                        await client.send_message(chat_id, f"<blockquote>{head}</blockquote>\n<b>{text}</b>\n\n<blockquote><b>{usertxt}</blockquote></b>", disable_web_page_preview=True)
                     await asyncio.sleep(5)
                     usernum = 0
                     usertxt = ""
+                    head = "<blockquote>🛒 @xCpCode</blockquote>"
 
             if usernum != 0:
                 if replied:
                     await replied.reply_text(usertxt, disable_web_page_preview=True)
                 else:
                     text = message.text.split(maxsplit=1)[1]
-                    await client.send_message(chat_id, f"<blockquote><b>{text}\n{usertxt}</b></blockquote>", disable_web_page_preview=True)
+                    await client.send_message(chat_id, f"<blockquote>{head}</blockquote>\n<b>{text}</b>\n\n<blockquote><b>{usertxt}</blockquote></b>", disable_web_page_preview=True)
 
         except errors.FloodWait as e:
             await asyncio.sleep(e.value)
@@ -140,23 +140,28 @@ async def tagadmins_cmd(client, message):
                 continue
             usernum += 1
             usertxt += f"<blockquote>[{random_emoji()}](tg://user?id={m.user.id})</blockquote>"
+            head += f"<blockquote>🛒 @xCpCode</blockquote>"
+
             if usernum == 7:
                 if replied:
                     await replied.reply_text(usertxt, disable_web_page_preview=True)
                 else:
                     text = message.text.split(maxsplit=1)[1]
-                    await client.send_message(chat_id, f"<blockquote>{text}</blockquote>\n<blockquote>{usertxt}</blockquote>", disable_web_page_preview=True)
+                    await client.send_message(chat_id, f"<blockquote>{head}</blockquote>\n<b>{text}</b>\n\n<blockquote><b>{usertxt}</blockquote></b>", disable_web_page_preview=True)
                 await asyncio.sleep(2)
                 usernum = 0
                 usertxt = ""
+                head = "<blockquote>🛒 @xCpCode</blockquote>"
+
         if usernum != 0:
             if replied:
                 await replied.reply_text(usertxt, disable_web_page_preview=True)
             else:
                 text = message.text.split(maxsplit=1)[1]
-                await client.send_message(chat_id, f"<blockquote>{text}</blockquote>\n<blockquote>{usertxt}</blockquote>", disable_web_page_preview=True)
+                await client.send_message(chat_id, f"<blockquote>{head}</blockquote>\n<b>{text}</b>\n\n<blockquote><b>{usertxt}</blockquote></b>", disable_web_page_preview=True)
     except errors.FloodWait as e:
         await asyncio.sleep(e.value)
     finally:
         admins_tasks.pop(chat_id, None)
     return await proses.delete()
+
