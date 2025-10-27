@@ -42,7 +42,7 @@ async def callback_unmute(client, callback):
                 await callback.answer("Peringatan! Jangan tekan tombol saat Anda bisa berbicara.", True)
 
 
-@app.on_message(filters.incoming & ~filters.privaqte, group=-2)
+@app.on_message(filters.incoming & ~filters.private, group=-2)
 async def check_member(client, message):
     chat_id = message.chat.id
     force_subs = await dB.get_var(chat_id, "IS_FORCESUB")
@@ -161,4 +161,5 @@ Disable forced subscription.
 Unmute all users previously muted for not joining the required channel.
 </blockquote>
 """
+
 
