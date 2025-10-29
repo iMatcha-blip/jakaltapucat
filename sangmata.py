@@ -42,7 +42,7 @@ async def sang_mata(client, message):
     if old_username != username:
         old_u = f"@{old_username}" if old_username else "<b>Without Username</b>"
         new_u = f"@{username}" if username else "<b>Without Username</b>"
-        changes.append(f"<b>♻️ Changing the username from <code>{old_u}</code> ke <code>{new_u}</code></b>.")
+        changes.append(f"<b>♻️ Changing the username from <code>{old_u}</code> to <code>{new_u}</code></b>.")
 
     if old_first != first:
         changes.append(f"<b>♻️ Changing the first name from <code>{old_first}</code> to <code>{first}</code>.</b>")
@@ -54,7 +54,7 @@ async def sang_mata(client, message):
 
     if changes:
         msg = f"<b>👀 {client.mention} Sang Mata Detected!</b>\n\n"
-        msg += f"<b>Pengguna : {message.from_user.mention} [<code>{user_id}</code>]</b>\n"
+        msg += f"<b>User : {message.from_user.mention} [<code>{user_id}</code>]</b>\n"
         msg += "\n".join(changes)
         await message.reply_text(f"<blockquote expandable>{msg}</blockquote>", quote=True)
 
@@ -121,6 +121,7 @@ __HELP__ = """
 <b>★ /sg</b> [userID/reply] – View user name history.
 </blockquote>
 """
+
 
 
 
