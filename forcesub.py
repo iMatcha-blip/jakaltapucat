@@ -68,11 +68,11 @@ async def check_member(client, message):
                         invite_url = invite_link.invite_link
 
                     sent_message = await message.reply_text(
-f"""👋 Selamat Datang {message.from_user.mention}
+f"""👋 Hey {message.from_user.mention}
 
-Anda belum bergabung dengan channel kami **{fsub_title}**.
+Anda belum bergabung dengan channel kami di **{fsub_title}**.
 
-Silahkan bergabung [disini]({invite_url}) dan tekan tombol **Suarakan Saya**.""",
+Untuk dapat mengirim pesan silahkan bergabung [disini]({invite_url}) atau klik tombol join channel dan tekan tombol **Suarakan Saya**.""",
                         disable_web_page_preview=True,
                         reply_markup=ikb([
                             [("Join Channel", invite_url, "url")],
@@ -161,5 +161,6 @@ Disable forced subscription.
 Unmute all users previously muted for not joining the required channel.
 </blockquote>
 """
+
 
 
