@@ -53,7 +53,7 @@ async def sang_mata(client, message):
         changes.append(f"<b>♻️ Changing the last name from <code>{old_l}</code> to <code>{new_l}</code>.</b>")
 
     if changes:
-        msg = f"<b>👀 {client.mention} Sang Mata Detected!</b>\n\n"
+        msg = f"<b>👀 {client.me.mention} Sang Mata Detected!</b>\n\n"
         msg += f"<b>User : {message.from_user.mention} [<code>{user_id}</code>]</b>\n"
         msg += "\n".join(changes)
         await message.reply_text(f"<blockquote expandable>{msg}</blockquote>", quote=True)
@@ -121,6 +121,7 @@ __HELP__ = """
 <b>★ /sg</b> [userID/reply] – View user name history.
 </blockquote>
 """
+
 
 
 
