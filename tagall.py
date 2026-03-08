@@ -46,7 +46,6 @@ async def tagall_cmd(client, message):
     if active_tasks.get(chat_id):
         return await proses.edit(">❌ Mention already running in this chat. Use `/cancel` to stop it.")
 
-    # --- ambil text target ---
     text = None
     if len(message.command) >= 2:
         text = message.text.split(maxsplit=1)[1]
@@ -62,7 +61,7 @@ async def tagall_cmd(client, message):
     async def tag_members():
         usernum = 0
         usertxt = ""
-        head = "<blockquote>🛒 @xCpCode</blockquote>"
+        head = "<blockquote><emoji id=5373052667671093676>🛍</emoji> : @xCpCode</blockquote>"
 
         try:
             async for m in client.get_chat_members(chat_id):
@@ -185,3 +184,4 @@ async def tagadmins_cmd(client, message):
         admins_tasks.pop(chat_id, None)
 
     await proses.delete()
+
